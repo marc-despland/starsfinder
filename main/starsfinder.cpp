@@ -9,6 +9,7 @@
 
 int main(int argc, char ** argv) {
   Log::logger->setLevel(DEBUG);
+
   string config="config.cfg";
   Options options(argv[0], ".0.1", "Stars Finder");
   try {
@@ -17,6 +18,8 @@ int main(int argc, char ** argv) {
     options.add('s', "source", "The source image to analyse", true, false);
     options.add('l', "level", "Luminance level to detect star", true, false);
     options.add('p', "precision", "Precision of the zone to search", true, false);
+    options.add('o', "output", "The output file", true, false);
+    options.add('x', "brighter", "Multiplication factor for the star lightness", true, false);
   } catch(ExistingOptionException &e ) {
   }
   try {
@@ -39,15 +42,23 @@ int main(int argc, char ** argv) {
       try {
         //params->parse();
         try {
-          double level=100;
+          double level=10;
           if (options.get("level")->isAssign()) {
             level=options.get("level")->asDouble();
+          } 
+          double brighter=0;
+          if (options.get("brighter")->isAssign()) {
+            brighter=options.get("brighter")->asDouble();
           } 
           unsigned int precision=1;
           if (options.get("precision")->isAssign()) {
             precision=options.get("precision")->asInt();
             if (precision <1) precision=1;
           } 
+          string output="";
+          if (options.get("output")->isAssign()) {
+            output=options.get("output")->asString();
+          }
           string source="";
           if (options.get("source")->isAssign()) {
             source=options.get("source")->asString();
@@ -58,7 +69,7 @@ int main(int argc, char ** argv) {
           }*/
           Analyzer analyzer;
           try {
-            analyzer.analyze(source,level, precision);
+            analyzer.analyze(source,level, precision, output, brighter);
           } catch (AnalyzerUnknownFile &e) {
             Log::logger->log("GLOBAL", EMERGENCY) << "Unknown file " << source << endl;
           }
