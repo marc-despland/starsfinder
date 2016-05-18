@@ -4,7 +4,9 @@
 #include <iostream>
 
 
-std::vector<Star *> Star::stars;
+//std::vector<Star *> * Star::stars=new std::vector<Star *>();
+
+unsigned long Star::counter=0;
 
 Star::Star(unsigned int x, unsigned int y, double luminance) {
 	this->lum=luminance;
@@ -12,7 +14,8 @@ Star::Star(unsigned int x, unsigned int y, double luminance) {
 	this->bottom=y;
 	this->left=x;
 	this->right=x;
-	stars.push_back(this);
+	this->id=(Star::counter++);
+	//stars->push_back(this);
 }
 
 Star::Star() {
@@ -21,11 +24,12 @@ Star::Star() {
 	this->bottom=0;
 	this->left=0;
 	this->right=0;
+	this->id=(Star::counter++);
 }
 
-int Star::count() {
-	return Star::stars.size();
-}
+/*int Star::count() {
+	return Star::stars->size();
+}*/
 
 void Star::add(unsigned int x, unsigned int y, double luminance) {
 	this->lum+=luminance;
@@ -51,10 +55,43 @@ bool Star::isNear(unsigned int x, unsigned int y) {
 }
 
 
+/*void Star::SortList() {
+	std::vector<Star *> * sorted=new std::vector<Star *>();
+	for (std::vector<Star *>::iterator it = Star::stars->begin() ; it != Star::stars->end(); ++it) {
+		std::vector<Star *>::iterator itsearch = sorted->begin();
+		bool found=false;
+		while (!found && itsearch != sorted->end()) {
+			if ((*itsearch)->x()<(*it)->x()) {
+				found=true;
+				sorted->insert(itsearch, (*it));
+			}
+			itsearch++;
+		}
+		if (!found) {
+			sorted->push_back((*it));
+		}
+	}
+	std::vector<Star *> * tmp=Star::stars;
+	Star::stars=sorted;
+	delete tmp;
+
+}
+
 void Star::print() {
+	unsigned i=0;
+	for (std::vector<Star *>::iterator it = Star::stars->begin() ; it != Star::stars->end(); ++it) {
+		std::cout << "Star \t" << i << "\t" << (*it)->x() << "\t" << (*it)->y() << "\t" << (*it)->luminance()<< std::endl;
+		i++;
+	}
+}*/
+
+
+
+/*void Star::list(int size) {
+	int * ordered
 	unsigned i=0;
 	for (std::vector<Star *>::iterator it = Star::stars.begin() ; it != Star::stars.end(); ++it) {
 		std::cout << "Star \t" << i << "\t" << (*it)->x() << "\t" << (*it)->y() << "\t" << (*it)->luminance()<< std::endl;
 		i++;
 	}
-}
+}*/

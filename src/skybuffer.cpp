@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include "log.h"
 
-SkyBuffer::SkyBuffer(unsigned int lines, unsigned int width) {
+SkyBuffer::SkyBuffer(Constellation * constellation,unsigned int lines, unsigned int width) {
 	this->lines=lines;
 	this->width=width;
 	this->buffer=new Star**[lines+1];
+	this->constellation=constellation;
 	for (unsigned int i=0; i<lines+1; i++) {
 		this->buffer[i]=new Star*[width+(2*lines)];
 		for (unsigned int j=0; j<width+(2*lines); j++) {
@@ -62,6 +63,7 @@ void SkyBuffer::addPoint(unsigned int x, unsigned int y, double luminance) {
 		star->add(x, y, luminance);
 	} else {
 		star=new Star(x, y, luminance);
+		this->constellation->Add(star);
 	}
 	buffer[lines][lines+x]=star;
 }

@@ -10,15 +10,19 @@ public:
 	void add(unsigned int x, unsigned int y, double luminance);
 	bool isNear(unsigned int x, unsigned int y);
 	
-	static int count();
-	static void print();
+//	static int count();
+//	static void print();
 	
 	double x();
 	double y();
 	double luminance();
 
+	enum SortType { X, Y, LUMINANCE };
+//	static void SortList();
 protected:
-	static std::vector<Star *> stars;  
+	unsigned long id;
+	static unsigned long counter;
+//	static std::vector<Star *> * stars;  
 	unsigned int left, top, bottom, right;
 	double lum;
 };

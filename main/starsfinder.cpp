@@ -5,7 +5,10 @@
 #include "options.h"
 #include "parameters.h"
 #include <unistd.h>
-#include "analyzer.h"
+#include "constellation.h"
+#include "jsoncpp.h"
+#include "skybuffer.h"
+#include "pixel.h"
 
 int main(int argc, char ** argv) {
   Log::logger->setLevel(DEBUG);
@@ -18,8 +21,8 @@ int main(int argc, char ** argv) {
     options.add('s', "source", "The source image to analyse", true, false);
     options.add('l', "level", "Luminance level to detect star", true, false);
     options.add('p', "precision", "Precision of the zone to search", true, false);
-    options.add('o', "output", "The output file", true, false);
-    options.add('x', "brighter", "Multiplication factor for the star lightness", true, false);
+    options.add('g', "group", "Constellation or group of stars file", true, false);
+
   } catch(ExistingOptionException &e ) {
   }
   try {
@@ -46,33 +49,33 @@ int main(int argc, char ** argv) {
           if (options.get("level")->isAssign()) {
             level=options.get("level")->asDouble();
           } 
-          double brighter=0;
-          if (options.get("brighter")->isAssign()) {
-            brighter=options.get("brighter")->asDouble();
-          } 
           unsigned int precision=1;
           if (options.get("precision")->isAssign()) {
             precision=options.get("precision")->asInt();
             if (precision <1) precision=1;
           } 
-          string output="";
-          if (options.get("output")->isAssign()) {
-            output=options.get("output")->asString();
+          if (options.get("group")->isAssign()) {
+            try {
+              Constellation * json=Constellation::FromJson(options.get("group")->asString());
+              Log::logger->log("GLOBAL", DEBUG) <<json->ToJson();
+            }catch (ConstellationUnknownFile &e) {
+              Log::logger->log("GLOBAL", EMERGENCY) << "Unknown Constellation file " << options.get("group")->asString() << endl;
+            }
           }
           string source="";
           if (options.get("source")->isAssign()) {
             source=options.get("source")->asString();
+            try {
+              Constellation * json=Constellation::FromJpeg(source,level, precision);
+              Log::logger->log("GLOBAL", DEBUG) <<json->ToJson();
+            } catch (ConstellationUnknownFile &e) {
+              Log::logger->log("GLOBAL", EMERGENCY) << "Unknown file " << source << endl;
+            }
           } /*else {
             if (params->get("source")->isAssign()) {
               source=params->get("source")->asString();
             }
           }*/
-          Analyzer analyzer;
-          try {
-            analyzer.analyze(source,level, precision, output, brighter);
-          } catch (AnalyzerUnknownFile &e) {
-            Log::logger->log("GLOBAL", EMERGENCY) << "Unknown file " << source << endl;
-          }
 
         } catch (UnknownParameterNameException &e) {
         	Log::logger->log("GLOBAL", EMERGENCY) << "Not defined parameter " << endl;
