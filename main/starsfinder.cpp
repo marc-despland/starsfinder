@@ -9,6 +9,8 @@
 #include "jsoncpp.h"
 #include "skybuffer.h"
 #include "pixel.h"
+#include "trisearchstar.h"
+
 
 int main(int argc, char ** argv) {
   Log::logger->setLevel(DEBUG);
@@ -41,6 +43,8 @@ int main(int argc, char ** argv) {
       }
       exit(0);
     }*/
+      Constellation * sky=NULL;
+      Constellation * pattern=NULL;
      try {
       try {
         //params->parse();
@@ -56,9 +60,10 @@ int main(int argc, char ** argv) {
           } 
           if (options.get("group")->isAssign()) {
             try {
-              Constellation * json=Constellation::FromJson(options.get("group")->asString());
-              Log::logger->log("GLOBAL", DEBUG) <<json->ToJson();
+              pattern=Constellation::FromJson(options.get("group")->asString());
+              Log::logger->log("GLOBAL", DEBUG) <<pattern->ToJson();
             }catch (ConstellationUnknownFile &e) {
+              pattern=NULL;
               Log::logger->log("GLOBAL", EMERGENCY) << "Unknown Constellation file " << options.get("group")->asString() << endl;
             }
           }
@@ -66,17 +71,16 @@ int main(int argc, char ** argv) {
           if (options.get("source")->isAssign()) {
             source=options.get("source")->asString();
             try {
-              Constellation * json=Constellation::FromJpeg(source,level, precision);
-              Log::logger->log("GLOBAL", DEBUG) <<json->ToJson();
+              sky=Constellation::FromJpeg(source,level, precision);
+              Log::logger->log("GLOBAL", DEBUG) <<sky->ToJson();
             } catch (ConstellationUnknownFile &e) {
+              sky=NULL;
               Log::logger->log("GLOBAL", EMERGENCY) << "Unknown file " << source << endl;
             }
-          } /*else {
-            if (params->get("source")->isAssign()) {
-              source=params->get("source")->asString();
-            }
-          }*/
-
+          }
+          if (sky!=NULL && pattern!=NULL) {
+            sky->Search(pattern);
+          }
         } catch (UnknownParameterNameException &e) {
         	Log::logger->log("GLOBAL", EMERGENCY) << "Not defined parameter " << endl;
         }

@@ -22,6 +22,9 @@ public:
 	std::string GetName();
 
 	std::string ToJson();
+
+	bool Search(Constellation * pattern);
+
 	static Constellation * FromJson(std::string filename) throw(ConstellationUnknownFile);
 	static Constellation * FromJpeg(std::string source, double level, unsigned int precision)  throw(ConstellationUnknownFile);
 protected:

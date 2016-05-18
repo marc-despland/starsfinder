@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include <math.h> 
 
 
 //std::vector<Star *> * Star::stars=new std::vector<Star *>();
-
+std::map<unsigned long,Star *> Star::catalog;
 unsigned long Star::counter=0;
 
 Star::Star(unsigned int x, unsigned int y, double luminance) {
@@ -15,6 +16,7 @@ Star::Star(unsigned int x, unsigned int y, double luminance) {
 	this->left=x;
 	this->right=x;
 	this->id=(Star::counter++);
+	Star::catalog[this->id]=this;
 	//stars->push_back(this);
 }
 
@@ -25,6 +27,7 @@ Star::Star() {
 	this->left=0;
 	this->right=0;
 	this->id=(Star::counter++);
+	Star::catalog[this->id]=this;
 }
 
 /*int Star::count() {
@@ -55,43 +58,27 @@ bool Star::isNear(unsigned int x, unsigned int y) {
 }
 
 
-/*void Star::SortList() {
-	std::vector<Star *> * sorted=new std::vector<Star *>();
-	for (std::vector<Star *>::iterator it = Star::stars->begin() ; it != Star::stars->end(); ++it) {
-		std::vector<Star *>::iterator itsearch = sorted->begin();
-		bool found=false;
-		while (!found && itsearch != sorted->end()) {
-			if ((*itsearch)->x()<(*it)->x()) {
-				found=true;
-				sorted->insert(itsearch, (*it));
-			}
-			itsearch++;
-		}
-		if (!found) {
-			sorted->push_back((*it));
-		}
-	}
-	std::vector<Star *> * tmp=Star::stars;
-	Star::stars=sorted;
-	delete tmp;
-
+double Star::distance(Star * star) {
+	double dx=this->x()-star->x();
+	double dy=this->y()-star->y();
+	return sqrt((dx*dx)+(dy*dy));
 }
 
-void Star::print() {
-	unsigned i=0;
-	for (std::vector<Star *>::iterator it = Star::stars->begin() ; it != Star::stars->end(); ++it) {
-		std::cout << "Star \t" << i << "\t" << (*it)->x() << "\t" << (*it)->y() << "\t" << (*it)->luminance()<< std::endl;
-		i++;
-	}
-}*/
+void Star::precision(unsigned int p) {
+	this->left=this->x()-p;
+	this->right=this->x()+p;
+	this->top=this->y()-p;
+	this->bottom=this->y()+p;
+}
 
+bool Star::include(Star * target) {
+	return ((target->x()>this->left) && (target->x()<this->right) && (target->y()>this->top) && (target->y()<this->bottom));
+}
 
+unsigned long Star::Id() {
+	return this->id;
+}
 
-/*void Star::list(int size) {
-	int * ordered
-	unsigned i=0;
-	for (std::vector<Star *>::iterator it = Star::stars.begin() ; it != Star::stars.end(); ++it) {
-		std::cout << "Star \t" << i << "\t" << (*it)->x() << "\t" << (*it)->y() << "\t" << (*it)->luminance()<< std::endl;
-		i++;
-	}
-}*/
+Star * Star::at(unsigned long id) {
+	return Star::catalog[id];
+}

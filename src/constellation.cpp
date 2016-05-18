@@ -8,7 +8,7 @@
 #include "skybuffer.h"
 #include "pixel.h"
 #include "log.h"
-
+#include "trisearchstar.h"
 
 Constellation::Constellation(std::string name) {
 	this->stars=new std::vector<Star *>();
@@ -163,4 +163,39 @@ Constellation * Constellation::FromJpeg(std::string source, double level, unsign
 
 	fclose(infile);
 	return result;
+}
+
+
+bool Constellation::Search(Constellation * pattern) {
+	pattern->Sort(Star::SortType::LUMINANCE);
+	Star * triple[3];
+	triple[0]=pattern->Stars()->at(0);
+	triple[1]=pattern->Stars()->at(1);
+	triple[2]=pattern->Stars()->at(2);
+	for (int i=0; i<3;i++) {
+		Log::logger->log("CONSTELLATION", DEBUG) << "STAR "<< i << "\t " << triple[i]->x() << "\t" << triple[i]->y() << endl;
+	}
+
+	TriSearchStar * engine=new TriSearchStar(triple);
+
+	for (int i=0;i<this->Size(); i++) {
+		for (int j=0;j<this->Size(); j++) {
+			if (i!=j) {
+				Star * target=engine->CalculateThird(this->stars->at(i),this->stars->at(j));
+				target->precision(2);
+				for (int k=0;k<this->Size(); k++) {
+					if ((i!=k) && (j!=k)) {
+						if (target->include(this->stars->at(k))) {
+							Log::logger->log("CONSTELLATION", DEBUG) << endl<< "Found Match \t\t: " << this->stars->at(i)->Id()<<", "<<this->stars->at(j)->Id()<<", "<<this->stars->at(k)->Id() <<std::endl;
+							Log::logger->log("CONSTELLATION", DEBUG) << "STAR "<< this->stars->at(i)->Id() << "\t " << Star::at(this->stars->at(i)->Id())->x() << "\t" << Star::at(this->stars->at(i)->Id())->y() << endl;
+							Log::logger->log("CONSTELLATION", DEBUG) << "STAR "<< this->stars->at(j)->Id() << "\t " << Star::at(this->stars->at(j)->Id())->x() << "\t" << Star::at(this->stars->at(j)->Id())->y() << endl;
+							Log::logger->log("CONSTELLATION", DEBUG) << "STAR "<< this->stars->at(k)->Id() << "\t " << Star::at(this->stars->at(k)->Id())->x() << "\t" << Star::at(this->stars->at(k)->Id())->y() << endl;
+						}
+					}
+				}
+			}
+		}
+	}
+	return false;
+
 }
