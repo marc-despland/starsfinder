@@ -3,7 +3,9 @@
 #include "star.h"
 #include <string>
 #include <stdexcept>
+//#include "matchstars.h"
 
+class MatchStars;
 
 
 class ConstellationUnknownFile : public std::exception {
@@ -23,7 +25,7 @@ public:
 
 	std::string ToJson();
 
-	bool Search(Constellation * pattern);
+	MatchStars * Search(Constellation * pattern, unsigned int tolerance);
 
 	static Constellation * FromJson(std::string filename) throw(ConstellationUnknownFile);
 	static Constellation * FromJpeg(std::string source, double level, unsigned int precision)  throw(ConstellationUnknownFile);

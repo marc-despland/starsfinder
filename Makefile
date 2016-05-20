@@ -5,7 +5,7 @@ CPPFLAGS       = -g -Wall -Iinclude -std=c++0x
 OLDFLAGS	= -std=c++11
 CFLAGS       = $(CPPFLAGS) 
 LDLIBS		 = -ljpeg
-TARGET  = starsfinder
+TARGET  = starsfinder alkashi
 SOURCES = $(shell echo src/*.cpp)
 HEADERS = $(shell echo include/*.h)
 OBJECTS = $(SOURCES:.cpp=.o)

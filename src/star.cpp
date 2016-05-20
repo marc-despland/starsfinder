@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <math.h> 
-
+#include "log.h"
 
 //std::vector<Star *> * Star::stars=new std::vector<Star *>();
 std::map<unsigned long,Star *> Star::catalog;
@@ -15,7 +15,7 @@ Star::Star(unsigned int x, unsigned int y, double luminance) {
 	this->bottom=y;
 	this->left=x;
 	this->right=x;
-	this->id=(Star::counter++);
+	this->id=(++Star::counter);
 	Star::catalog[this->id]=this;
 	//stars->push_back(this);
 }
@@ -65,14 +65,22 @@ double Star::distance(Star * star) {
 }
 
 void Star::precision(unsigned int p) {
-	this->left=this->x()-p;
-	this->right=this->x()+p;
-	this->top=this->y()-p;
-	this->bottom=this->y()+p;
+	unsigned int x=this->x();
+	unsigned int y=this->y();
+	this->left=x-p;
+	this->right=x+p;
+	this->top=y-p;
+	this->bottom=y+p;
 }
 
 bool Star::include(Star * target) {
-	return ((target->x()>this->left) && (target->x()<this->right) && (target->y()>this->top) && (target->y()<this->bottom));
+	bool result=((target->x()>this->left) && (target->x()<this->right) && (target->y()>this->top) && (target->y()<this->bottom));
+	if (result) {
+		Log::logger->log("STAR", DEBUG) << "Include this("<<this->left<<","<<this->right<<","<<this->top<<","<<this->bottom<<")   Target ("<<target->x()<<","<<target->y()<<") TRUE"<<std::endl;
+	} else {
+		Log::logger->log("STAR", DEBUG) << "Include this("<<this->left<<","<<this->right<<","<<this->top<<","<<this->bottom<<")   Target ("<<target->x()<<","<<target->y()<<") FALSE"<<std::endl;
+	}
+	return result;
 }
 
 unsigned long Star::Id() {
