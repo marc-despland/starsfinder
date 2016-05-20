@@ -226,51 +226,55 @@ MatchStars * Constellation::Search(Constellation * pattern, unsigned int toleran
 			if (i!=j) {
 				//second=this->stars->at(j)->Id();
 				next=matches->match(this->stars->at(j)->Id());
-				engine->Target(this->stars->at(i),this->stars->at(j));
-				matched=true;
-				Log::logger->log("CONSTELLATION", DEBUG) << "\tLoop : i=" << i<<"\t j="<<j<<"\t second="<<second<< "\t next=" << next<<"\t matched="<< matched<<std::endl;
-				Log::logger->log("CONSTELLATION", DEBUG) << "Starting" << std::endl << "==============================================="<<std::endl<<matches->status();
-				while (next>0 && matched && next!=second) {
-					Log::logger->log("CONSTELLATION", DEBUG) << "\t\tLoop : next=" << next<< "\t matched="<< matched<<"\t second="<<second<<std::endl;
-					Log::logger->log("CONSTELLATION", DEBUG) << "\t\t\tSearched star : "<<next<<"("<<Star::at(next)->x()<<","<<Star::at(next)->y()<<")"<<std::endl;
+				double ratio=engine->Target(this->stars->at(i),this->stars->at(j));
+				if ((ratio>0.8) && (ratio<1.2)) {
+					matched=true;
+					Log::logger->log("CONSTELLATION", DEBUG) << "\tLoop : i=" << i<<"\t j="<<j<<"\t second="<<second<< "\t next=" << next<<"\t matched="<< matched<<std::endl;
+					Log::logger->log("CONSTELLATION", DEBUG) << "Starting" << std::endl << "==============================================="<<std::endl<<matches->status();
+					while (next>0 && matched && next!=second) {
+						Log::logger->log("CONSTELLATION", DEBUG) << "\t\tLoop : next=" << next<< "\t matched="<< matched<<"\t second="<<second<<std::endl;
+						Log::logger->log("CONSTELLATION", DEBUG) << "\t\t\tSearched star : "<<next<<"("<<Star::at(next)->x()<<","<<Star::at(next)->y()<<")"<<std::endl;
 
-					Star * target=engine->Calculate(Star::at(next));
-					target->precision(tolerance);
-					Log::logger->log("CONSTELLATION", DEBUG) << "\t\tTarget\t:\t("<<target->x()<<","<<target->y()<<")"<<std::endl;
-					matched=false;
-					std::vector<Star *>::iterator it=this->stars->begin();
-					while (it!=this->stars->end() && next!=second && next!=0) {
-						//Log::logger->log("CONSTELLATION", DEBUG) << "\t\tTarget\t:\t("<<target->x()<<","<<target->y()<<")\t ID:"<<(*it)->Id()<<" ("<<(*it)->x()<<","<<(*it)->y()<<")"<<std::endl;
-						if (!matches->known((*it)->Id())) {
-							//Log::logger->log("CONSTELLATION", DEBUG) << "\t\tTest the Target"<<std::endl;
-							matched=target->include((*it));
-						}
-						if (matched) {
-							next=matches->match((*it)->Id());
-							Log::logger->log("CONSTELLATION", DEBUG) << "We have a match next :"<<next << std::endl << "==============================================="<<std::endl<<matches->status();
-							it=this->stars->begin();
-							if (next>0) {
-								target=engine->Calculate(Star::at(next));
-								target->precision(tolerance);
-								matched=false;
+						Star * target=engine->Calculate(Star::at(next));
+						target->precision(tolerance);
+						Log::logger->log("CONSTELLATION", DEBUG) << "\t\tTarget\t:\t("<<target->x()<<","<<target->y()<<")"<<std::endl;
+						matched=false;
+						std::vector<Star *>::iterator it=this->stars->begin();
+						while (it!=this->stars->end() && next!=second && next!=0) {
+							//Log::logger->log("CONSTELLATION", DEBUG) << "\t\tTarget\t:\t("<<target->x()<<","<<target->y()<<")\t ID:"<<(*it)->Id()<<" ("<<(*it)->x()<<","<<(*it)->y()<<")"<<std::endl;
+							if (!matches->known((*it)->Id())) {
+								//Log::logger->log("CONSTELLATION", DEBUG) << "\t\tTest the Target"<<std::endl;
+								matched=target->include((*it));
 							}
-						} else {
-							it++;
-							if (it==this->stars->end()) {
-								Star * current=Star::at(matches->lastTarget());
+							if (matched) {
+								next=matches->match((*it)->Id());
+								Log::logger->log("CONSTELLATION", DEBUG) << "We have a match next :"<<next << std::endl << "==============================================="<<std::endl<<matches->status();
 								it=this->stars->begin();
-								while(it!=this->stars->end() && (*it)!=current) it++;
-								if (it!=this->stars->end()) {
-									it++;
+								if (next>0) {
+									target=engine->Calculate(Star::at(next));
+									target->precision(tolerance);
+									matched=false;
 								}
-								next=matches->unmatch();
-								Log::logger->log("CONSTELLATION", DEBUG) << "Unmatch next :"<<next << std::endl << "==============================================="<<std::endl<<matches->status();
+							} else {
+								it++;
+								if (it==this->stars->end()) {
+									Star * current=Star::at(matches->lastTarget());
+									it=this->stars->begin();
+									while(it!=this->stars->end() && (*it)!=current) it++;
+									if (it!=this->stars->end()) {
+										it++;
+									}
+									next=matches->unmatch();
+									Log::logger->log("CONSTELLATION", DEBUG) << "Unmatch next :"<<next << std::endl << "==============================================="<<std::endl<<matches->status();
 
+								}
 							}
 						}
+						Log::logger->log("CONSTELLATION", DEBUG) << "Search status" << std::endl << "==============================================="<<std::endl<<matches->status();
+						Log::logger->log("CONSTELLATION", DEBUG) << "\t\tEnd  : next=" << next<< "\t matched="<< matched<<"\t second="<<second<<std::endl;
 					}
-					Log::logger->log("CONSTELLATION", DEBUG) << "Search status" << std::endl << "==============================================="<<std::endl<<matches->status();
-					Log::logger->log("CONSTELLATION", DEBUG) << "\t\tEnd  : next=" << next<< "\t matched="<< matched<<"\t second="<<second<<std::endl;
+				} else {
+					matches->unmatch();
 				}
 				/*if (!matched) {
 					matches->unmatch();

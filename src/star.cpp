@@ -16,6 +16,8 @@ Star::Star(unsigned int x, unsigned int y, double luminance) {
 	this->left=x;
 	this->right=x;
 	this->id=(++Star::counter);
+	this->sx=(x*luminance);
+	this->sy=(y*luminance);
 	Star::catalog[this->id]=this;
 	//stars->push_back(this);
 }
@@ -27,6 +29,8 @@ Star::Star() {
 	this->left=0;
 	this->right=0;
 	this->id=(Star::counter++);
+	this->sx=0;
+	this->sy=0;
 	Star::catalog[this->id]=this;
 }
 
@@ -36,17 +40,23 @@ Star::Star() {
 
 void Star::add(unsigned int x, unsigned int y, double luminance) {
 	this->lum+=luminance;
+	this->sx+=(x*luminance);
+	this->sy+=(y*luminance);
 	if (y>this->top) this->top=y;
 	if (y<this->bottom) this->bottom=y;
 	if (x<this->left) this->left=x;
 	if (x>this->right) this->right=x;
 
 }
+
+
 double Star::x() {
-	return (this->left+this->right)/2;
+	//return (this->left+this->right)/2;
+	return this->sx/this->lum;
 }
 double Star::y() {
-	return (this->top+this->bottom)/2;
+	//return (this->top+this->bottom)/2;
+	return this->sy/this->lum;
 }
 double Star::luminance() {
 	return this->lum;

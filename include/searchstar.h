@@ -5,8 +5,10 @@
 class SearchStar {
 public:
 	SearchStar(Star * A, Star * B);
-	void Target(Star * targetA, Star * targetB);
+	void Source(Star * A, Star * B);
+	double Target(Star * targetA, Star * targetB);
 	Star * Calculate(Star * C);
+
 
 protected:
 	static double AlKashi(double a, double b, double c);
@@ -21,6 +23,7 @@ protected:
 	double lengthTAB;
 	double targetdx;
 	double targetdy;
+	double ea, eb;
 
 };
 

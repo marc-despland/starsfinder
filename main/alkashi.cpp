@@ -133,5 +133,14 @@ int main(int argc, char ** argv) {
  	angle = Angle(A, B, C);
  	D=Calculate(A,B,C);
 	std::cout << "A("<<A->x()<<","<<A->y()<<")\tB("<<B->x()<<","<<B->y()<<")\tC("<<C->x()<<","<<C->y()<<")\tangle="<<(angle*180/3.14116)<<"\tD("<<D->x()<<","<<D->y()<<")"<<std::endl;
+
+	A=new Star(2118,1052,10);
+	B=new Star(1904,1792,10);
+	C=new Star(1768,1852,10);
+	angle = Angle(A, B, C);
+	D=Calculate(A,B,C);
+	std::cout << "A("<<A->x()<<","<<A->y()<<")\tB("<<B->x()<<","<<B->y()<<")\tC("<<C->x()<<","<<C->y()<<")\tangle="<<(angle*180/3.14116)<<"\tD("<<D->x()<<","<<D->y()<<")"<<std::endl;
+
+
 	return 0;
 }

@@ -10,7 +10,6 @@
 #include "skybuffer.h"
 #include "pixel.h"
 #include "searchstar.h"
-#include "trisearchstar.h"
 #include "matchstars.h"
 
 
@@ -59,14 +58,17 @@ int main(int argc, char ** argv) {
              std::cout << "Switch Debug to mode to "<<Log::logger->levelStr(options.get("debug")->asString())<<" "<<options.get("debug")->asString()<< endl;
           }
           if (options.get("test")->isAssign()) {
-            Star * test1=new Star(617,1232,10);
-            Star * test2=new Star(1020,1007,10);
-            Star * test3=new Star(907,1489,10);
+            Star * test1=new Star(2116,1066,10);
+            Star * test2=new Star(2460,1777,10);
+            Star * test3=new Star(2399,1923,10);
+            std::cout << "Test 1\t"<<test1->x()<<"\t"<<test1->y()<<std::endl;
+            std::cout << "Test 2\t"<<test2->x()<<"\t"<<test2->y()<<std::endl;
+            std::cout << "Test 3\t"<<test3->x()<<"\t"<<test3->y()<<std::endl;
             SearchStar * tester=new SearchStar(test1, test2);
-            tester->Target(new Star(860,149,10), new Star(1332,257,10));
+            tester->Target(new Star(2128,1052,10), new Star(1904,1792,10));
             Star * find=tester->Calculate(test3);
-            Log::logger->log("GLOBAL", NOTICE) << "Test Target\t"<<test3->x()<<"\t"<<test3->y()<<std::endl;
-            Log::logger->log("GLOBAL", NOTICE) << "Test Find\t"<<find->x()<<"\t"<<find->y()<<std::endl;
+            std::cout << "Test Target\t"<<test3->x()<<"\t"<<test3->y()<<std::endl;
+            std::cout << "Test Find\t"<<find->x()<<"\t"<<find->y()<<std::endl;
 
           } 
 

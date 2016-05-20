@@ -34,6 +34,7 @@ protected:
 //	static std::vector<Star *> * stars;  
 	unsigned int left, top, bottom, right;
 	double lum;
+	double sx, sy;
 };
 
 #endif
